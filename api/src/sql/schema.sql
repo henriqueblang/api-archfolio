@@ -9,6 +9,7 @@ CREATE TABLE archfolio.users (
 
 	pfp_url TEXT NULL,
 
+	name VARCHAR(70) NULL,
 	description VARCHAR(150) NULL,
 	location VARCHAR(50) NULL,
 
