@@ -1,6 +1,7 @@
 SELECT
     id,
     pfp_url,
+    name,
     description,
     location,
     joined_at
