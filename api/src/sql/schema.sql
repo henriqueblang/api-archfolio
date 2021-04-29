@@ -4,7 +4,7 @@ CREATE TABLE archfolio.users (
 	id SERIAL PRIMARY KEY,
 
 	username VARCHAR(16) UNIQUE NOT NULL,
-	salt VARCHAR(16) NOT NULL,
+	salt BYTEA NOT NULL,
 	password VARCHAR(28) NOT NULL,
 
 	pfp_url TEXT NULL,
