@@ -1,142 +1,84 @@
-CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE SCHEMA archfolio;
 
--- DROP SCHEMA geocast;
+CREATE TABLE archfolio.users (
+	id SERIAL PRIMARY KEY,
 
-CREATE SCHEMA geocast;
+	username VARCHAR(16) UNIQUE NOT NULL,
+	salt VARCHAR(16) NOT NULL,
+	password VARCHAR(28) NOT NULL,
 
--- DROP SEQUENCE geocast.camadas_id_seq;
+	pfp_url TEXT NULL,
 
-CREATE SEQUENCE geocast.camadas_id_seq
-	INCREMENT BY 1
-	MINVALUE 1
-	MAXVALUE 2147483647
-	START 1
-	CACHE 1
-	NO CYCLE;
--- DROP SEQUENCE geocast.feicoes_id_seq;
+	description VARCHAR(150) NULL,
+	location VARCHAR(50) NULL,
 
-CREATE SEQUENCE geocast.feicoes_id_seq
-	INCREMENT BY 1
-	MINVALUE 1
-	MAXVALUE 2147483647
-	START 1
-	CACHE 1
-	NO CYCLE;
--- DROP SEQUENCE geocast.projetos_id_seq;
-
-CREATE SEQUENCE geocast.projetos_id_seq
-	INCREMENT BY 1
-	MINVALUE 1
-	MAXVALUE 2147483647
-	START 1
-	CACHE 1
-	NO CYCLE;
-
--- geocast.empresas definition
-
--- Drop table
-
--- DROP TABLE geocast.empresas;
-
-CREATE TABLE geocast.empresas (
-	id uuid NOT NULL DEFAULT uuid_generate_v4(),
-	empresa varchar(50) NULL,
-	CONSTRAINT empresas_pk PRIMARY KEY (id),
-	CONSTRAINT empresas_un UNIQUE (empresa)
+	joined_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- geocast.projetos definition
+CREATE TABLE archfolio.followers (
+	id SERIAL PRIMARY KEY,
 
--- Drop table
+	follower_id INT NOT NULL,
+	following_id INT NOT NULL,
 
--- DROP TABLE geocast.projetos;
-
-CREATE TABLE geocast.projetos (
-	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	empresa_fk uuid NOT NULL,
-	nome_projeto varchar(60) NULL,
-	grupo_de_acesso varchar(20) NULL,
-	CONSTRAINT projetos_pk PRIMARY KEY (id),
-	CONSTRAINT projetos_un UNIQUE (empresa_fk, nome_projeto),
-	CONSTRAINT projetos_fk FOREIGN KEY (empresa_fk) REFERENCES geocast.empresas(id) ON DELETE CASCADE
+	FOREIGN KEY (follower_id) REFERENCES archfolio.users(id) ON DELETE CASCADE,
+	FOREIGN KEY (follower_id) REFERENCES archfolio.users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE archfolio.posts (
+	id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
 
--- geocast.camadas definition
+	title VARCHAR(20) NULL,
+	description VARCHAR(150) NULL,
 
--- Drop table
+	tags TEXT[] NULL,
+	views INT NOT NULL DEFAULT 0,
 
--- DROP TABLE geocast.camadas;
+	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
-CREATE TABLE geocast.camadas (
-	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	projeto_fk int4 NOT NULL,
-	nome_camada varchar(20) NULL,
-	ordem_da_camada int4 NULL,
-	nivel_dtb varchar(20) NULL,
-	cor_da_camada varchar(8) NULL,
-    public boolean NOT NULL DEFAULT FALSE,
-	CONSTRAINT camadas_pk PRIMARY KEY (id),
-	CONSTRAINT camadas_un UNIQUE (projeto_fk, nome_camada),
-	CONSTRAINT camadas_fk FOREIGN KEY (projeto_fk) REFERENCES geocast.projetos(id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES archfolio.users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE archfolio.metadatas (
+	id SERIAL PRIMARY KEY,
+	post_id INT NOT NULL,
 
--- geocast.feicoes definition
+	is_url BOOLEAN NOT NULL DEFAULT FALSE,
+	content TEXT NOT NULL,
 
--- Drop table
+	disposition_order INT NOT NULL DEFAULT 0,
 
--- DROP TABLE geocast.feicoes;
-
-CREATE TABLE geocast.feicoes (
-	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	camada_fk int4 NOT NULL,
-	nome_feicao varchar(20) NULL,
-	parametros jsonb NULL,
-	shape jsonb NULL,
-	imagem_raster bytea NULL,
-	coordenada_ancora point NULL,
-	cod_dtb_ibge varchar(16) NULL,
-	pino_raster point NULL,
-	cor_da_feicao varchar(8) NULL,
-	data_criacao timestamp(0) NOT NULL DEFAULT NOW(),
-	data_eliminacao timestamp(0) NULL,
-	CONSTRAINT feicoes_pk PRIMARY KEY (id),
-	CONSTRAINT feicoes_un UNIQUE (camada_fk, nome_feicao),
-	CONSTRAINT feicoes_un_2 UNIQUE (camada_fk, shape),
-	CONSTRAINT feicoes_fk FOREIGN KEY (camada_fk) REFERENCES geocast.camadas(id) ON DELETE CASCADE
+	FOREIGN KEY (post_id) REFERENCES archfolio.posts(id) ON DELETE CASCADE
 );
 
+CREATE TABLE archfolio.likes (
+	id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	post_id INT NOT NULL,
 
--- geocast.series definition
-
--- Drop table
-
--- DROP TABLE geocast.series;
-
-CREATE TABLE geocast.series (
-	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	feicao_fk int4 NULL,
-	nome_dependente varchar(40) NULL,
-	nome_explicativo varchar(40) NULL,
-	cor_da_serie varchar(8) NULL,
-	CONSTRAINT series_pk PRIMARY KEY (id),
-	CONSTRAINT series_fk FOREIGN KEY (feicao_fk) REFERENCES geocast.feicoes(id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES archfolio.users(id) ON DELETE CASCADE,
+	FOREIGN KEY (post_id) REFERENCES archfolio.posts(id) ON DELETE CASCADE
 );
 
+CREATE TABLE archfolio.favorites (
+	id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	post_id INT NOT NULL,
 
--- geocast.observacoes definition
+	FOREIGN KEY (user_id) REFERENCES archfolio.users(id) ON DELETE CASCADE,
+	FOREIGN KEY (post_id) REFERENCES archfolio.posts(id) ON DELETE CASCADE
+);
 
--- Drop table
+CREATE TABLE archfolio.comments (
+	id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	post_id INT NOT NULL,
 
--- DROP TABLE geocast.observacoes;
+	content VARCHAR(1000) NULL,
 
-CREATE TABLE geocast.observacoes (
-	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
-	series_fk int4 NULL,
-	val_dependente varchar(50) NULL,
-	val_explicativo varchar(50) NULL,
-	CONSTRAINT observacoes_pk PRIMARY KEY (id),
-	CONSTRAINT observacoes_fk FOREIGN KEY (series_fk) REFERENCES geocast.series(id) ON DELETE CASCADE
+	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+
+	FOREIGN KEY (user_id) REFERENCES archfolio.users(id) ON DELETE CASCADE,
+	FOREIGN KEY (post_id) REFERENCES archfolio.posts(id) ON DELETE CASCADE
 );
