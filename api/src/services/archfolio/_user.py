@@ -38,6 +38,8 @@ async def create_user(self, fields):
     # Stores profile picture in Gyazo
     # Updates profile picture URL in database
 
+    user = None
+
     async with Archfolio.get_instance().session.transaction():
         salt, pw_hash = __hash_new_password(fields["password"])
 
@@ -56,7 +58,7 @@ async def create_user(self, fields):
             fields["id"] = user["id"]
             fields["pfp_url"] = upload_information["url"]
 
-            user = self.update_user(fields)
+            user = await self.update_user(fields)
 
     return user
 
