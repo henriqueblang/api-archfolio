@@ -31,6 +31,15 @@ class ErrorResourceDataInvalid:
     }
 
 
+class ErrorAuthorizationForbidden:
+    status_code = 403
+
+    error = {
+        "type": "forbidden_authorization",
+        "description": "The authentication key provided do not have permission to access this resource.",
+    }
+
+
 class ErrorRouteNotFound:
     status_code = 404
 

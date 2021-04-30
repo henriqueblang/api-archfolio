@@ -31,6 +31,7 @@ async def create_user(self, fields):
     #   username
     #   password
     #   profile_picture
+    #   name
     #   description
     #   location
     # Generates salt and hashes password
@@ -91,10 +92,11 @@ async def update_user(self, fields):
     #   username [None]
     #   salt [None]
     #   password [None]
-    #   pfp_url [None]
+    #   profile_picture [None]
     #   name [None]
     #   description [None]
     #   location [None]
+    # Stores profile picture in Gyazo
     # Updates in database
 
     if "username" not in fields:
@@ -106,8 +108,8 @@ async def update_user(self, fields):
     if "password" not in fields:
         fields["password"] = None
 
-    if "pfp_url" not in fields:
-        fields["pfp_url"] = None
+    if "profile_picture" not in fields:
+        fields["profile_picture"] = None
 
     if "name" not in fields:
         fields["name"] = None
@@ -117,6 +119,14 @@ async def update_user(self, fields):
 
     if "location" not in fields:
         fields["location"] = None
+
+    profile_picture = fields["profile_picture"]
+    if profile_picture is not None:
+        image = Archfolio.get_instance().client.upload_image(profile_picture)
+
+        upload_information = image.to_dict()
+
+        fields["pfp_url"] = upload_information["url"]
 
     return await self.update_data("user/update_user", fields)
 
