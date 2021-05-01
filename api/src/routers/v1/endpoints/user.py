@@ -20,7 +20,7 @@ async def create_user(
     user_dict["profile_picture"] = file
 
     try:
-        result = await Archfolio.get_instance().insert_user(user_dict)
+        result = await Archfolio.get_instance().create_user(user_dict)
     except StringDataRightTruncationError:
         errors.raise_error_response(errors.ErrorResourceDataInvalid)
     except UniqueViolationError:
