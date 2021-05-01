@@ -93,11 +93,13 @@ async def delete_user(id: int):
     }
 
     try:
-        result = await Archfolio.get_instance().delete_user(fields)
+        result = await Archfolio.get_instance().delete_users(fields)
     except Exception:
         errors.raise_error_response(errors.ErrorInternal)
 
-    result = {k: v for k, v in result.items() if not isinstance(v, bytes)}
-
     if result is None:
         errors.raise_error_response(errors.ErrorResourceNotFound)
+
+    result = {k: v for k, v in result.items() if not isinstance(v, bytes)}
+
+    return result
