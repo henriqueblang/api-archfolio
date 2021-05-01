@@ -109,7 +109,6 @@ async def update_user(self, fields):
     # Receives
     #   id
     #   username [None]
-    #   salt [None]
     #   password [None]
     #   profile_picture [None]
     #   name [None]
@@ -118,16 +117,15 @@ async def update_user(self, fields):
     # Stores profile picture in Gyazo
     # Updates in database
 
-    if "username" not in fields:
-        fields["username"] = None
+    if fields["password"] is not None:
+        salt, pw_hash = __hash_new_password(fields["password"])
 
-    if "salt" not in fields:
+        fields["salt"] = salt
+        fields["password"] = pw_hash
+    else:
         fields["salt"] = None
 
-    if "password" not in fields:
-        fields["password"] = None
-
-    if "profile_picture" not in fields or fields["profile_picture"] is None:
+    if fields["profile_picture"] is None:
         fields["pfp_url"] = None
     else:
         profile_picture = fields["profile_picture"]
@@ -135,15 +133,6 @@ async def update_user(self, fields):
         image = self.get_instance().client.upload_image(profile_picture.file).to_dict()
 
         fields["pfp_url"] = image["url"]
-
-    if "name" not in fields:
-        fields["name"] = None
-
-    if "description" not in fields:
-        fields["description"] = None
-
-    if "location" not in fields:
-        fields["location"] = None
 
     return await self.update_data(
         "user/update_user",
