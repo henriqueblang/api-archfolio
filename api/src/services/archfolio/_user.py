@@ -56,15 +56,22 @@ async def create_user(self, fields):
 
         profile_picture = fields["profile_picture"]
         if profile_picture is not None:
-            image = self.get_instance().client.upload_image(profile_picture.file)
+            image = (
+                self.get_instance().client.upload_image(profile_picture.file).to_dict()
+            )
 
-            upload_information = image.to_dict()
-
-            user = await self.update_user(
+            user = await self.update_data(
+                "user/update_user",
                 {
                     "id": user["id"],
-                    "pfp_url": upload_information["url"],
-                }
+                    "username": None,
+                    "salt": None,
+                    "password": None,
+                    "pfp_url": image["url"],
+                    "name": None,
+                    "description": None,
+                    "location": None,
+                },
             )
 
     return user
@@ -141,6 +148,7 @@ async def update_user(self, fields):
     return await self.update_data(
         "user/update_user",
         {
+            "id": fields["id"],
             "username": fields["username"],
             "salt": fields["salt"],
             "password": fields["password"],
