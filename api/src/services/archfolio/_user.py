@@ -130,9 +130,9 @@ async def update_user(self, fields):
     if "profile_picture" not in fields or fields["profile_picture"] is None:
         fields["pfp_url"] = None
     else:
-        image = (
-            self.get_instance().client.upload_image(fields["profile_picture"]).to_dict()
-        )
+        profile_picture = fields["profile_picture"]
+
+        image = self.get_instance().client.upload_image(profile_picture.file).to_dict()
 
         fields["pfp_url"] = image["url"]
 
