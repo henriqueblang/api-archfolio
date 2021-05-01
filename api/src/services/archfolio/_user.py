@@ -56,7 +56,7 @@ async def create_user(self, fields):
 
         profile_picture = fields["profile_picture"]
         if profile_picture is not None:
-            image = self.get_instance().client.upload_image(profile_picture)
+            image = self.get_instance().client.upload_image(profile_picture.file)
 
             upload_information = image.to_dict()
 
