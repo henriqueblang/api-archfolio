@@ -3,8 +3,6 @@ import hmac
 import os
 from typing import Tuple
 
-from src.services.archfolio import Archfolio
-
 
 def __hash_new_password(password: str) -> Tuple[bytes, bytes]:
     """
@@ -41,7 +39,7 @@ async def create_user(self, fields):
 
     user = None
 
-    async with Archfolio.get_instance().session.transaction():
+    async with self.get_instance().session.transaction():
         salt, pw_hash = __hash_new_password(fields["password"])
 
         fields["salt"] = salt
@@ -51,7 +49,7 @@ async def create_user(self, fields):
 
         profile_picture = fields["profile_picture"]
         if profile_picture is not None:
-            image = Archfolio.get_instance().client.upload_image(profile_picture)
+            image = self.get_instance().client.upload_image(profile_picture)
 
             upload_information = image.to_dict()
 
@@ -122,7 +120,7 @@ async def update_user(self, fields):
 
     profile_picture = fields["profile_picture"]
     if profile_picture is not None:
-        image = Archfolio.get_instance().client.upload_image(profile_picture)
+        image = self.get_instance().client.upload_image(profile_picture)
 
         upload_information = image.to_dict()
 
