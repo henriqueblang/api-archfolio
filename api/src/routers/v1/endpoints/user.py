@@ -31,6 +31,8 @@ async def create_user(
     if result is None:
         errors.raise_error_response(errors.ErrorInternal)
 
+    result = {k: v for k, v in result.items() if not isinstance(v, bytes)}
+
     return result
 
 
@@ -50,6 +52,8 @@ async def get_user(
         errors.raise_error_response(errors.ErrorResourceNotFound)
     elif not result:
         errors.raise_error_response(errors.ErrorAuthorizationForbidden)
+
+    result = {k: v for k, v in result.items() if not isinstance(v, bytes)}
 
     return result
 
@@ -77,6 +81,8 @@ async def update_user(
     if result is None:
         errors.raise_error_response(errors.ErrorResourceNotFound)
 
+    result = {k: v for k, v in result.items() if not isinstance(v, bytes)}
+
     return result
 
 
@@ -90,6 +96,8 @@ async def delete_user(id: int):
         result = await Archfolio.get_instance().delete_user(fields)
     except Exception:
         errors.raise_error_response(errors.ErrorInternal)
+
+    result = {k: v for k, v in result.items() if not isinstance(v, bytes)}
 
     if result is None:
         errors.raise_error_response(errors.ErrorResourceNotFound)
