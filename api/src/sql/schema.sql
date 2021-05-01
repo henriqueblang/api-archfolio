@@ -5,7 +5,7 @@ CREATE TABLE archfolio.users (
 
 	username VARCHAR(16) UNIQUE NOT NULL,
 	salt BYTEA NOT NULL,
-	password VARCHAR(28) NOT NULL,
+	password BYTEA NOT NULL,
 
 	pfp_url TEXT NULL,
 
