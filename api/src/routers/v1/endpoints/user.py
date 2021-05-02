@@ -38,10 +38,10 @@ async def create_user(
 
 @router.get("")
 async def get_user(
-    username: str,
+    identification: str,
     password: str,
 ):
-    fields = {"username": username, "password": password}
+    fields = {"identification": identification, "password": password}
 
     try:
         result = await Archfolio.get_instance().get_user(fields)

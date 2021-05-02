@@ -1,8 +1,9 @@
 INSERT INTO
-    archfolio.users(username, salt, password, name, description, location)
+    archfolio.users(username, email, salt, password, name, description, location)
 VALUES
     (
         :username,
+        :email,
         :salt,
         :password,
         :name,

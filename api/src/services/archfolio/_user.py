@@ -27,11 +27,12 @@ def __is_correct_password(salt: bytes, pw_hash: bytes, password: str) -> bool:
 async def create_user(self, fields):
     # Receives:
     #   username
+    #   email
     #   password
-    #   profile_picture
+    #   profile_picture [None]
     #   name
-    #   description
-    #   location
+    #   description [None]
+    #   location [None]
     # Generates salt and hashes password
     # Inserts into database
     # Stores profile picture in Gyazo
@@ -46,6 +47,7 @@ async def create_user(self, fields):
             "user/insert_user",
             {
                 "username": fields["username"],
+                "email": fields["email"],
                 "salt": salt,
                 "password": pw_hash,
                 "name": fields["name"],
@@ -65,6 +67,7 @@ async def create_user(self, fields):
                 {
                     "id": user["id"],
                     "username": None,
+                    "email": None,
                     "salt": None,
                     "password": None,
                     "pfp_url": image["url"],
@@ -79,7 +82,7 @@ async def create_user(self, fields):
 
 async def get_user(self, fields):
     # Receives:
-    #   username
+    #   identification
     #   password
     # Looks in database for:
     #   user matching username
@@ -88,7 +91,7 @@ async def get_user(self, fields):
     user = await self.select_data(
         "user/select_user_no_pagination",
         {
-            "username": fields["username"],
+            "identification": fields["identification"],
         },
         all=False,
     )
@@ -109,6 +112,7 @@ async def update_user(self, fields):
     # Receives
     #   id
     #   username [None]
+    #   email [None]
     #   password [None]
     #   profile_picture [None]
     #   name [None]
@@ -139,6 +143,7 @@ async def update_user(self, fields):
         {
             "id": fields["id"],
             "username": fields["username"],
+            "email": fields["email"],
             "salt": fields["salt"],
             "password": fields["password"],
             "pfp_url": fields["pfp_url"],

@@ -2,6 +2,7 @@ UPDATE
     archfolio.users
 SET
     username = COALESCE(cast(:username AS TEXT), username),
+    email = COALESCE(cast(:email AS TEXT), email),
     salt = COALESCE(cast(:salt AS BYTEA), salt),
     password = COALESCE(cast(:password AS BYTEA), password),
     pfp_url = COALESCE(cast(:pfp_url AS TEXT), pfp_url),
