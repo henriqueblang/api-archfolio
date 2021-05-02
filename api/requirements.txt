@@ -1,4 +1,4 @@
-aiohttp==3.6.3
+aiohttp==3.7.4
 asyncinit==0.2.4
 asyncpg==0.21.0
 databases==0.4.1
