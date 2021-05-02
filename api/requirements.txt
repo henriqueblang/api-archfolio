@@ -3,7 +3,7 @@ asyncinit==0.2.4
 asyncpg==0.21.0
 databases==0.4.1
 fastapi==0.63.0
-gyazo
+python-gyazo
 pre-commit
 pydantic==1.7.3
 python-dotenv==0.15.0
