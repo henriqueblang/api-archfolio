@@ -34,50 +34,23 @@ async def create_user(self, fields):
     #   description [None]
     #   location [None]
     # Generates salt and hashes password
-    # Inserts into database
     # Stores profile picture in Gyazo
-    # Updates profile picture URL in database
+    # Inserts into database
 
-    user = None
+    salt, pw_hash = __hash_new_password(fields["password"])
 
-    async with self.get_instance().session.transaction():
-        salt, pw_hash = __hash_new_password(fields["password"])
+    fields["salt"] = salt
+    fields["password"] = pw_hash
 
-        user = await self.insert_data(
-            "user/insert_user",
-            {
-                "username": fields["username"],
-                "email": fields["email"],
-                "salt": salt,
-                "password": pw_hash,
-                "name": fields["name"],
-                "description": fields["description"],
-                "location": fields["location"],
-            },
-        )
+    profile_picture = fields.pop("profile_picture", None)
 
-        profile_picture = fields["profile_picture"]
-        if profile_picture is not None:
-            image = (
-                self.get_instance().client.upload_image(profile_picture.file).to_dict()
-            )
+    fields["pfp_url"] = (
+        (self.get_instance().client.upload_image(profile_picture.file).to_dict())["url"]
+        if profile_picture is not None
+        else None
+    )
 
-            user = await self.update_data(
-                "user/update_user",
-                {
-                    "id": user["id"],
-                    "username": None,
-                    "email": None,
-                    "salt": None,
-                    "password": None,
-                    "pfp_url": image["url"],
-                    "name": None,
-                    "description": None,
-                    "location": None,
-                },
-            )
-
-    return user
+    return await self.insert_data("user/insert_user", fields)
 
 
 async def get_user(self, fields):
@@ -85,7 +58,7 @@ async def get_user(self, fields):
     #   identification
     #   password
     # Looks in database for:
-    #   user matching username
+    #   user matching identification (username or email)
     # Compares given password with stored salted and hashed password
 
     user = await self.select_data(
@@ -99,11 +72,12 @@ async def get_user(self, fields):
     if not user:
         return None
 
-    salt = user["salt"]
-    pw_hash = user["password"]
+    if fields["password"] is not None:
+        salt = user["salt"]
+        pw_hash = user["password"]
 
-    if not __is_correct_password(salt, pw_hash, fields["password"]):
-        return False
+        if not __is_correct_password(salt, pw_hash, fields["password"]):
+            return False
 
     return user
 

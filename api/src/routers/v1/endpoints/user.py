@@ -39,7 +39,7 @@ async def create_user(
 @router.get("")
 async def get_user(
     identification: str,
-    password: str,
+    password: Optional[str] = None,
 ):
     fields = {"identification": identification, "password": password}
 
