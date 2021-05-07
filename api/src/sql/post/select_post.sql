@@ -3,7 +3,7 @@ SELECT
 FROM
     archfolio.posts
 WHERE
-    (cast(:id AS INT) IS NULL OR user_id = :id)
+    (cast(:author AS INT) IS NULL OR user_id = :author)
     OR
     (cast(:tags AS TEXT[]) IS NULL OR tags @> :tags)
     OR
