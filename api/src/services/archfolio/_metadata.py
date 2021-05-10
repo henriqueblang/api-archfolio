@@ -44,6 +44,7 @@ async def get_metadatas(self, fields):
 
 async def update_metadata(self, fields):
     # Receives:
+    #   id
     #   content [None]
     #   disposition_order [None]
 

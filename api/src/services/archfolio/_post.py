@@ -16,6 +16,8 @@ async def get_posts(self, fields):
     #   title [None]
     #   username [None]
     #   name [None]
+    #   start_date [None]
+    #   end_date [None]
     #   offset [None]
     #   fetch [None]
     # Looks in database for:
@@ -37,6 +39,12 @@ async def get_posts(self, fields):
 
     if "name" not in fields:
         fields["name"] = None
+
+    if "start_date" not in fields:
+        fields["start_date"] = None
+
+    if "end_date" not in fields:
+        fields["end_date"] = None
 
     query = "post/select_post"
 
