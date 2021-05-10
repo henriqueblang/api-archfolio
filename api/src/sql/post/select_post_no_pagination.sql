@@ -3,12 +3,12 @@ SELECT
 FROM
     archfolio.posts
 WHERE
-    (cast(:id AS INT) IS NULL OR user_id = :id)
-    OR
+    (cast(:author AS INT) IS NULL OR user_id = :author)
+    AND
     (cast(:tags AS TEXT[]) IS NULL OR tags @> :tags)
-    OR
+    AND
     (cast(:title AS TEXT) IS NULL OR title LIKE '%' || :title || '%')
-    OR
+    AND
     (
         cast(:username AS TEXT) IS NULL
         OR
@@ -21,7 +21,7 @@ WHERE
                 username LIKE '%' || :username || '%'
         )
     )
-    OR
+    AND
     (
         cast(:name AS TEXT) IS NULL
         OR
@@ -34,3 +34,7 @@ WHERE
                 name LIKE '%' || :name || '%'
         )
     )
+    AND
+    (cast(:start_date AS TIMESTAMP) IS NULL OR created_at >= :start_date)
+    AND
+    (cast(:end_date AS TIMESTAMP) IS NULL OR created_at <= :end_date)

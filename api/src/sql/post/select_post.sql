@@ -4,11 +4,11 @@ FROM
     archfolio.posts
 WHERE
     (cast(:author AS INT) IS NULL OR user_id = :author)
-    OR
+    AND
     (cast(:tags AS TEXT[]) IS NULL OR tags @> :tags)
-    OR
+    AND
     (cast(:title AS TEXT) IS NULL OR title LIKE '%' || :title || '%')
-    OR
+    AND
     (
         cast(:username AS TEXT) IS NULL
         OR
@@ -21,7 +21,7 @@ WHERE
                 username LIKE '%' || :username || '%'
         )
     )
-    OR
+    AND
     (
         cast(:name AS TEXT) IS NULL
         OR
@@ -34,4 +34,8 @@ WHERE
                 name LIKE '%' || :name || '%'
         )
     )
+    AND
+    (cast(:start_date AS TIMESTAMP) IS NULL OR created_at >= :start_date)
+    AND
+    (cast(:end_date AS TIMESTAMP) IS NULL OR created_at <= :end_date)
 ORDER BY (SELECT NULL) OFFSET :offset ROWS FETCH NEXT :fetch ROWS ONLY
