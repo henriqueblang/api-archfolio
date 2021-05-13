@@ -6,7 +6,7 @@ from asyncpg.exceptions import (
     StringDataRightTruncationError,
 )
 from dateutil import parser
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from src.schemas.post import Post, UpdatePost
 from src.services.archfolio import Archfolio
 from src.utils import errors
@@ -33,7 +33,7 @@ async def create_post(
 @router.get("")
 async def get_posts(
     author: Optional[int] = None,
-    tags: Optional[List[int]] = None,
+    tags: Optional[List[str]] = Query(None),
     title: Optional[str] = None,
     username: Optional[str] = None,
     name: Optional[str] = None,
@@ -67,8 +67,8 @@ async def get_posts(
         InvalidRowCountInLimitClauseError,
     ):
         errors.raise_error_response(errors.ErrorResourceDataInvalid)
-    except Exception:
-        errors.raise_error_response(errors.ErrorInternal)
+    except Exception as exc:
+        errors.raise_error_response(errors.ErrorInternal, str(exc))
 
     if not result:
         errors.raise_error_response(errors.ErrorResourceNotFound)
