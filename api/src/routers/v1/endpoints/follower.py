@@ -71,7 +71,7 @@ async def delete_follower(
     }
 
     try:
-        result = await Archfolio.get_instance().delete_follower(fields)
+        result = await Archfolio.get_instance().delete_followers(fields)
     except Exception:
         errors.raise_error_response(errors.ErrorInternal)
 
