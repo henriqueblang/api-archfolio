@@ -12,7 +12,7 @@ WHERE
     (
         cast(:username AS TEXT) IS NULL
         OR
-        user_id = (
+        user_id IN (
             SELECT
                 id
             FROM
@@ -25,7 +25,7 @@ WHERE
     (
         cast(:name AS TEXT) IS NULL
         OR
-        user_id = (
+        user_id IN (
             SELECT
                 id
             FROM
