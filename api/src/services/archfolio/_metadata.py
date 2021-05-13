@@ -32,7 +32,7 @@ async def get_metadatas(self, fields):
         or "fetch" not in fields
         or fields["fetch"] is None
     ):
-        query = "post/select_metadata_no_pagination"
+        query = "metadata/select_metadata_no_pagination"
 
         fields.pop("offset", None)
         fields.pop("fetch", None)
