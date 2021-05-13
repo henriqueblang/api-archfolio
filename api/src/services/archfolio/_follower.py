@@ -31,10 +31,20 @@ async def get_followers(self, fields):
         fields.pop("offset", None)
         fields.pop("fetch", None)
 
-    followers = await self.select_data(follower_query, fields)
-    following = await self.select_data(following_query, fields)
+    followers_list = await self.select_data(follower_query, fields)
+    following_list = await self.select_data(following_query, fields)
 
-    return {"followers": followers, "following": following}
+    followers_list = [
+        {k: v for k, v in follower.items() if not isinstance(v, bytes)}
+        for follower in followers_list
+    ]
+
+    following_list = [
+        {k: v for k, v in following.items() if not isinstance(v, bytes)}
+        for following in following_list
+    ]
+
+    return {"followers": followers_list, "following": following_list}
 
 
 async def delete_followers(self, fields):
