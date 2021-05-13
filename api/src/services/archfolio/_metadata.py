@@ -6,8 +6,6 @@ async def create_metadata(self, fields):
     # Stores picture in Gyazo
     # Inserts into database
 
-    fields["is_url"] = isinstance(fields["content"], str)
-
     if fields["is_url"]:
         picture = fields["content"]
 

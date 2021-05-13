@@ -67,8 +67,8 @@ async def get_posts(
         InvalidRowCountInLimitClauseError,
     ):
         errors.raise_error_response(errors.ErrorResourceDataInvalid)
-    except Exception as exc:
-        errors.raise_error_response(errors.ErrorInternal, str(exc))
+    except Exception:
+        errors.raise_error_response(errors.ErrorInternal)
 
     if not result:
         errors.raise_error_response(errors.ErrorResourceNotFound)

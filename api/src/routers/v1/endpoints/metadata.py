@@ -24,12 +24,14 @@ async def create_metadata(
     metadata_dict = text.dict()
 
     metadata_dict["post_id"] = post_id
+    metadata_dict["is_url"] = False
 
     if file is not None:
+        metadata_dict["is_url"] = True
         metadata_dict["content"] = file
 
     try:
-        result = await Archfolio.get_instance().follow_user(metadata_dict)
+        result = await Archfolio.get_instance().create_metadata(metadata_dict)
     except NotNullViolationError:
         errors.raise_error_response(errors.ErrorResourceNotFound)
     except Exception:
