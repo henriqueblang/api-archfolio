@@ -15,4 +15,4 @@ class Archfolio(Database):
         update_metadata,
     )
     from ._post import create_post, delete_posts, get_posts, update_post
-    from ._user import create_user, delete_users, get_user, update_user
+    from ._user import create_user, delete_users, get_users, update_user
