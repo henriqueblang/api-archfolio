@@ -37,14 +37,15 @@ async def create_user(
 
 
 @router.get("")
-async def get_user(
-    identification: str,
+async def get_users(
+    id: Optional[int] = None,
+    identification: Optional[str] = None,
     password: Optional[str] = None,
 ):
-    fields = {"identification": identification, "password": password}
+    fields = {"id": id, "identification": identification, "password": password}
 
     try:
-        result = await Archfolio.get_instance().get_user(fields)
+        result = await Archfolio.get_instance().get_users(fields)
     except Exception:
         errors.raise_error_response(errors.ErrorInternal)
 

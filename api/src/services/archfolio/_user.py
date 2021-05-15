@@ -53,17 +53,25 @@ async def create_user(self, fields):
     return await self.insert_data("user/insert_user", fields)
 
 
-async def get_user(self, fields):
+async def get_users(self, fields):
     # Receives:
-    #   identification
-    #   password
+    #   id [None]
+    #   identification [None]
+    #   password [None]
     # Looks in database for:
-    #   user matching identification (username or email)
+    #   user matching id or identification (username or email)
     # Compares given password with stored salted and hashed password
+
+    if "id" not in fields:
+        fields["id"] = None
+
+    if "identification" not in fields:
+        fields["identification"] = None
 
     user = await self.select_data(
         "user/select_user_no_pagination",
         {
+            "id": fields["id"],
             "identification": fields["identification"],
         },
         all=False,
