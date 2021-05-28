@@ -49,8 +49,8 @@ async def get_followers(self, fields):
 
 async def delete_followers(self, fields):
     # Receives:
-    # id
-    # following_id [None]
+    #   id
+    #   following_id [None]
     # Deletes in database:
     #   following with given id from user
     #   or all following from user

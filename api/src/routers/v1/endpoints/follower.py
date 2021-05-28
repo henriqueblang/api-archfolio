@@ -15,12 +15,12 @@ router = APIRouter()
 
 @router.post("")
 async def follow_user(
-    id: int,
+    user_id: int,
     follower: Follower,
 ):
     follower_dict = follower.dict()
 
-    follower_dict["id"] = id
+    follower_dict["id"] = user_id
 
     try:
         result = await Archfolio.get_instance().follow_user(follower_dict)
@@ -34,12 +34,12 @@ async def follow_user(
 
 @router.get("")
 async def get_followers(
-    id: int,
+    user_id: int,
     offset: Optional[int] = None,
     fetch: Optional[int] = None,
 ):
     fields = {
-        "id": id,
+        "id": user_id,
         "offset": offset,
         "fetch": fetch,
     }
@@ -62,11 +62,11 @@ async def get_followers(
 
 @router.delete("/{following_id}")
 async def delete_follower(
-    id: int,
+    user_id: int,
     following_id: int,
 ):
     fields = {
-        "id": id,
+        "id": user_id,
         "following_id": following_id,
     }
 
