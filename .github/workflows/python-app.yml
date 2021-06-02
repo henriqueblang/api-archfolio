@@ -60,17 +60,10 @@ jobs:
 
     - name: Run tests
       run: |
-        docker run --network=host -v $GITHUB_WORKSPACE/test-results:/app/test-results -e DNE_HOST=${{ secrets.DNE_HOST }} \
-        -e DNE_USER=${{ secrets.DNE_USER }} \
-        -e DNE_PASSWORD=${{ secrets.DNE_PASSWORD }} \
-        -e DNE_DATABASE=${{ secrets.DNE_DATABASE }} \
-        -e CACHE_HOST=${{ env.POSTGRE_HOST }} \
-        -e CACHE_USER=${{ env.POSTGRE_USER }} \
-        -e CACHE_PORT=${{ env.POSTGRE_PORT }} \
-        -e CACHE_PASSWORD=${{ env.POSTGRE_PASSWORD }} \
-        -e CACHE_DATABASE=${{ env.POSTGRE_DATABASE }} \
-        -e AUTH0_SECRET_KEY=${{ secrets.AUTH0_SECRET_KEY }} \
-        -e AUTH0_ALGORITHM=${{ secrets.AUTH0_ALGORITHM }} \
-        -e AUTH0_VALID_ISS=${{ secrets.AUTH0_VALID_ISS }} \
-        -e TEST_API_TOKEN=${{ secrets.TEST_API_TOKEN }} \
+        docker run --network=host -v $GITHUB_WORKSPACE/test-results:/app/test-results -e POSTGRE_HOST=${{ env.POSTGRE_HOST }} \
+        -e POSTGRE_USER=${{ env.POSTGRE_USER }} \
+        -e POSTGRE_PORT=${{ env.POSTGRE_PORT }} \
+        -e POSTGRE_PASSWORD=${{ env.POSTGRE_PASSWORD }} \
+        -e POSTGRE_DATABASE=${{ env.POSTGRE_DATABASE }} \
+        -e GYAZO_KEY=${{ secrets.GYAZO_KEY }} \
         build_api-archfolio:latest pytest --junitxml="test-reports.xml"
