@@ -1,10 +1,17 @@
 async def create_post(self, fields):
     # Receives
+    #   thumbnail
     #   author
     #   title
     #   description
     #   tags
     # Inserts into database
+
+    thumbnail = fields.pop("thumbnail")
+
+    fields["pfp_url"] = (
+        self.get_instance().client.upload_image(thumbnail.file).to_dict()
+    )["url"]
 
     return await self.insert_data("post/insert_post", fields)
 
@@ -65,10 +72,22 @@ async def get_posts(self, fields):
 async def update_post(self, fields):
     # Receives:
     #   id
+    #   thumbnail [None]
     #   title [None]
     #   description [None]
     #   tags [None]
     #   views [None]
+
+    if "thumbnail" not in fields:
+        fields["pfp_url"] = None
+    else:
+        thumbnail = fields.pop("thumbnail")
+
+        fields["pfp_url"] = (
+            (self.get_instance().client.upload_image(thumbnail.file).to_dict())["url"]
+            if thumbnail is not None
+            else None
+        )
 
     if "title" not in fields:
         fields["title"] = None

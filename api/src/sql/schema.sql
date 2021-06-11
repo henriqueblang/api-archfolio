@@ -31,6 +31,8 @@ CREATE TABLE archfolio.posts (
 	id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 
+	pfp_url TEXT NULL,
+
 	title VARCHAR(20) NULL,
 	description VARCHAR(150) NULL,
 

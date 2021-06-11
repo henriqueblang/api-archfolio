@@ -1,7 +1,7 @@
 from typing import Optional
 
 from asyncpg.exceptions import StringDataRightTruncationError, UniqueViolationError
-from fastapi import APIRouter, File, Form, Header, UploadFile
+from fastapi import APIRouter, File, Form, UploadFile
 from pydantic import Json
 from src.schemas.user import UpdateUser, User
 from src.services.archfolio import Archfolio

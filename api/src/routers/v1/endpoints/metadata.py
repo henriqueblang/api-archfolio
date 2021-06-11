@@ -6,7 +6,7 @@ from asyncpg.exceptions import (
     NotNullViolationError,
     StringDataRightTruncationError,
 )
-from fastapi import APIRouter, File, Form, Header, UploadFile
+from fastapi import APIRouter, File, Form, UploadFile
 from pydantic import Json
 from src.schemas.metadata import Metadata, UpdateMetadata
 from src.services.archfolio import Archfolio

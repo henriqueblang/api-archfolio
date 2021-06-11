@@ -6,7 +6,8 @@ from asyncpg.exceptions import (
     StringDataRightTruncationError,
 )
 from dateutil import parser
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, File, Form, Query, UploadFile
+from pydantic import Json
 from src.schemas.post import Post, UpdatePost
 from src.services.archfolio import Archfolio
 from src.utils import errors
@@ -16,9 +17,12 @@ router = APIRouter()
 
 @router.post("")
 async def create_post(
-    post: Post,
+    text: Json[Post] = Form(...),
+    file: Optional[UploadFile] = File(None),
 ):
-    post_dict = post.dict()
+    post_dict = text.dict()
+
+    post_dict["thumbnail"] = file
 
     try:
         result = await Archfolio.get_instance().create_post(post_dict)
@@ -79,11 +83,13 @@ async def get_posts(
 @router.patch("/{id}")
 async def update_post(
     id: int,
-    update_post: UpdatePost,
+    text: Json[UpdatePost] = Form(...),
+    file: Optional[UploadFile] = File(None),
 ):
-    post_dict = update_post.dict()
+    post_dict = text.dict()
 
     post_dict["id"] = id
+    post_dict["thumbnail"] = file
 
     try:
         result = await Archfolio.get_instance().update_post(post_dict)

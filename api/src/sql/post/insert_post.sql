@@ -1,11 +1,12 @@
 INSERT INTO
-    archfolio.posts(user_id, title, description, tags)
+    archfolio.posts(user_id, title, description, tags, pfp_url)
 VALUES
     (
         :author,
         :title,
         :description,
-        :tags
+        :tags,
+        :pfp_url
     )
 RETURNING
     *
