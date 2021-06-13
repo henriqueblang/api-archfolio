@@ -79,16 +79,18 @@ async def get_users(self, fields):
     if not result:
         return None
 
-    result = [{k: v for k, v in user.items() if not isinstance(v, bytes)} for user in result]
+    if fields["password"] is None:
+        result = [{k: v for k, v in user.items() if not isinstance(v, bytes)} for user in result]
+    else:
+        user = result[0]
 
-    if fields["password"] is not None:
-        result = result[0]
-
-        salt = result["salt"]
-        pw_hash = result["password"]
+        salt = user["salt"]
+        pw_hash = user["password"]
 
         if not __is_correct_password(salt, pw_hash, fields["password"]):
             return False
+
+        result = {k: v for k, v in user.items() if not isinstance(v, bytes)}    
 
     return result
 
