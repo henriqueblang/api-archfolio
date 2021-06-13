@@ -54,8 +54,6 @@ async def get_users(
     elif not result:
         errors.raise_error_response(errors.ErrorAuthorizationForbidden)
 
-    result = [{k: v for k, v in user.items() if not isinstance(v, bytes)} for user in result]
-
     return result
 
 
