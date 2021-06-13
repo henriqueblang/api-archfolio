@@ -68,26 +68,27 @@ async def get_users(self, fields):
     if "identification" not in fields:
         fields["identification"] = None
 
-    user = await self.select_data(
+    users = await self.select_data(
         "user/select_user_no_pagination",
         {
             "id": fields["id"],
             "identification": fields["identification"],
         },
-        all=False,
     )
 
-    if not user:
+    if not users:
         return None
 
     if fields["password"] is not None:
+        user = users[0]
+
         salt = user["salt"]
         pw_hash = user["password"]
 
         if not __is_correct_password(salt, pw_hash, fields["password"]):
             return False
 
-    return user
+    return users
 
 
 async def update_user(self, fields):
